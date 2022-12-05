@@ -87,19 +87,32 @@ export default {
         columnsList,
       });
     },
+    // 同步至当前组件columnsList
+    syncLocalColumnsList(columnsList) {
+      this.columnsList = columnsList;
+    },
   },
-  mounted() {},
   watch: {
-    getPercentage: {
-      handler() {
-        this.columnsList = this.currentCells.map((item) => []);
+    // 监听并初始化每一列的渲染内容
+    currentCells: {
+      handler(value) {
+        this.columnsList = value.map(() => []);
       },
       immediate: true,
     },
+
     columnsList: {
       handler(value) {
         this.syncStoreColumnsList(value);
       },
+      deep: true,
+      // immediate: true,  // 监听renderInfo的优先级需要高于columnsList，故不使用immediate
+    },
+    renderInfo: {
+      handler(rowInfo) {
+        this.$nextTick(() => this.syncLocalColumnsList(rowInfo.columnsList));
+      },
+      deep: true,
       immediate: true,
     },
   },

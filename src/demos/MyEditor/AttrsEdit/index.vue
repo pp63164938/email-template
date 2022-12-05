@@ -5,7 +5,9 @@
       <component
         @updateForm="onUpdateForm"
         :ref="`compRef_${currentRenderInfo.compId}_${currentRenderInfo.renderId}}`"
-        :attrsData="currentRenderInfo?.attrsFormData || {}"
+        :attrsData="
+          (currentRenderInfo && currentRenderInfo.attrsFormData) || {}
+        "
         :is="currentAttrsComp"
         :key="`${currentRenderInfo.compId}_${currentRenderInfo.renderId}}`"
       />
@@ -15,6 +17,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import EditoroPeration from "@/demos/MyEditor/common/EditoroPeration.js";
 export default {
   name: "AttrsEdit",
   computed: {
@@ -22,7 +25,9 @@ export default {
     ...mapGetters("MyEditor", ["allRenderAttrs"]),
     // 当前渲染组件对应的属性组件
     currentAttrsComp() {
-      return this.currentRenderInfo.attrsComponent;
+      let compId = this.currentRenderInfo.compId;
+      return (EditoroPeration.getComponentInfo(compId) || {}).attrsComponent;
+      // return this.currentRenderInfo.attrsComponent;
     },
     // 当前属性表单数据
     currentFormData() {

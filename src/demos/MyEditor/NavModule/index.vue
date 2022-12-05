@@ -63,11 +63,12 @@ export default {
     },
     // 拖动时触发---返回Boolean，是否可做为落脚点
     onMove(e) {
+      return e;
       // 落脚点信息
-      let dropInfo = e.relatedContext.element;
-      // 不允许当前导航区所有模块之间停靠，仅可被拖进渲染内容区
-      let isDrop = !dropInfo || dropInfo.renderId;
-      return true;
+      // let dropInfo = e.relatedContext.element;
+      // // 不允许当前导航区所有模块之间停靠，仅可被拖进渲染内容区
+      // let isDrop = !dropInfo || dropInfo.renderId;
+      // return true;
       // return !!isDrop;
     },
     // 复制时触发---拖拽到另一片区域

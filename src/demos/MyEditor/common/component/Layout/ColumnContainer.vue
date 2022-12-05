@@ -8,7 +8,7 @@
     @click.stop="handleClick(renderInfo)"
   >
     <component
-      :is="renderInfo.component"
+      :is="getComponentInfo(renderInfo.compId)"
       :renderInfo="renderInfo"
       v-bind="renderInfo.attrsFormData"
     />
@@ -22,6 +22,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import EditoroPeration from "@/demos/MyEditor/common/EditoroPeration.js";
 import "element-ui/lib/theme-chalk/index.css";
 
 export default {
@@ -50,6 +51,11 @@ export default {
   },
   methods: {
     ...mapActions("MyEditor", ["updateCurrentRender"]),
+    // 获取组件函数
+    getComponentInfo(compId) {
+      let info = EditoroPeration.getComponentInfo(compId) || {};
+      return info.component;
+    },
     // 点击当前模块时，同步至store的 当前选中-渲染内容
     handleClick(renderInfo = this.renderInfo) {
       this.updateCurrentRender(renderInfo);
