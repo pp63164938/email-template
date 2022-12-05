@@ -2,17 +2,17 @@
 export default class ComponentsList {
   static list = [
     {
-      compId: 'Layout_1-1-1',
+      compId: 'Layout',
       compName: '栅栏布局1-1-1',
-      component: () => import("./component/Layout/Layout_1-1-1.vue"),
-      attrsComponent: () => import("./component/Layout/Layout_1-1-1Attrs.vue"),
+      component: () => import("./component/Layout/Layout.vue"),
+      attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
       cells: [1, 1, 1]
     },
     {
       compId: 'Layout_1-1-3',
       compName: '栅栏布局1-1-3',
-      component: () => import("./component/Layout/Layout_1-1-1.vue"),
-      attrsComponent: () => import("./component/Layout/Layout_1-1-1Attrs.vue"),
+      component: () => import("./component/Layout/Layout.vue"),
+      attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
       cells: [1, 1, 3]
     },
     {

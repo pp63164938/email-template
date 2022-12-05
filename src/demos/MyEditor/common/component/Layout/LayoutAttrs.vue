@@ -21,7 +21,7 @@
 <script>
 import attrsMixin from "@/demos/MyEditor/common/component/attrsMixin";
 export default {
-  name: "Layout_1-1-1Attrs",
+  name: "LayoutAttrs",
   mixins: [attrsMixin],
   data() {
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div class="layout_1-1-1">
+  <div class="Layout">
     <div
       v-for="(cell, cellIndex) in currentCells"
       :key="cellIndex"
@@ -33,7 +33,7 @@ import { mapActions } from "vuex";
 import ColumnContainer from "./ColumnContainer.vue";
 export default {
   inheritAttrs: false,
-  name: "Layout_1-1-1",
+  name: "Layout",
   props: {
     text: String,
     renderInfo: Object,
@@ -121,7 +121,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.layout_1-1-1 {
+.Layout {
   .draggable-class {
     min-height: 100px;
   }
