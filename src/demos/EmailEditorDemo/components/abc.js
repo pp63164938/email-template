@@ -1,0 +1,1 @@
+export default `var abc = 199999999;console.log(abc)`
