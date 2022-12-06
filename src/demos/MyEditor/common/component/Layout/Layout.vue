@@ -6,9 +6,18 @@
       :style="{ width: getPercentage(cell) }"
       class="column"
     >
-      <div v-show="!columnsList[cellIndex].length">请拖入</div>
+      <div
+        v-show="
+          !columnsList ||
+          !columnsList[cellIndex] ||
+          !columnsList[cellIndex].length
+        "
+      >
+        请拖入
+      </div>
       <Draggable
         draggable-class="draggable-class"
+        v-if="columnsList[cellIndex]"
         v-model="columnsList[cellIndex]"
         :group="groupConf"
         animation="300"
@@ -47,6 +56,18 @@
 <script>
 import { mapActions } from "vuex";
 import ColumnContainer from "./ColumnContainer.vue";
+function isArraySame(arr1, arr2) {
+  // 若都为空，则视为相同
+  if (!arr1 && !arr2) return true;
+  // 长度不相等
+  if (arr1.length !== arr2.length) return false;
+
+  // 内容不相等
+  for (const [value1, index] of arr1.entries()) {
+    if (value1 !== arr2[index]) return false;
+  }
+  return true;
+}
 export default {
   inheritAttrs: false,
   name: "Layout",
@@ -60,11 +81,12 @@ export default {
       columnsList: [],
       groupConf: {
         name: "element",
+        sort: true,
         pull: true, //可以拖出
         put: (...arg) => {
           // 功能组件放进画布里的容器
           let info = arg[2]._underlying_vm_;
-          return ["feature"].includes(info.type);
+          return info && ["feature"].includes(info.type);
         }, //可以拖出
       },
     };
@@ -129,8 +151,15 @@ export default {
   watch: {
     // 监听并初始化每一列的渲染内容
     currentCells: {
-      handler(value) {
-        this.columnsList = value.map(() => []);
+      handler(value, oldValue) {
+        if (value && oldValue && !isArraySame(value, oldValue)) return;
+        this.columnsList = value.map(
+          // 若有内容则优先以回显内容为主，没有则初始化为空数组
+          (item, index) =>
+            this.columnsList && this.columnsList.length
+              ? this.columnsList[index]
+              : []
+        );
       },
       immediate: true,
     },
@@ -144,7 +173,9 @@ export default {
     },
     renderInfo: {
       handler(rowInfo) {
-        this.$nextTick(() => this.syncLocalColumnsList(rowInfo.columnsList));
+        // 若rowInfo.columnsList，则说明无需回显，直接取已有的columnsList
+        let columnsList = rowInfo.columnsList || this.columnsList;
+        this.$nextTick(() => this.syncLocalColumnsList(columnsList));
       },
       deep: true,
       immediate: true,

@@ -25,9 +25,7 @@ export default {
     // 获取加载渲染内容并挂载
     getLoadJSON(data) {
       let res = EditoroPeration.getLoadJSON(data);
-      this.updateAllRenderList({
-        renderList: res,
-      });
+      this.updateAllRenderList({ renderList: res });
       return res;
     },
     // 导出渲染内容为JSON

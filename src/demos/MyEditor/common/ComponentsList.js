@@ -16,13 +16,13 @@ export default class ComponentsList {
       attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
       type: 'layout',
       props: { cells: [1, 1, 1] },
-      cells: [1, 1, 3]
     },
     {
       compId: 'Layout_1-1-3',
       compName: '栅栏布局1-1-3',
       component: () => import("./component/Layout/Layout.vue"),
       attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
+      type: 'layout',
       props: { cells: [1, 1, 3] },
     },
     {

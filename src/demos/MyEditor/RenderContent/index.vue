@@ -2,6 +2,7 @@
   <div class="render-content">
     <!-- 若当前没有可渲染内容，则展示此行，防止 -->
     <!-- handle=".move" -->
+    <div v-show="!renderList || !renderList.length" key="0">请拖入组件模块</div>
     <Draggable
       class="draggable-class"
       :group="groupConf"
@@ -14,13 +15,6 @@
       @end="onEnd"
     >
       <transition-group style="min-height: 120px; display: block">
-        <div
-          class="empty-module"
-          v-show="!renderList || !renderList.length"
-          key="0"
-        >
-          请拖入组件模块
-        </div>
         <template v-for="(renderInfo, renderIndex) in renderList">
           <RenderContainer
             :renderInfo="renderInfo"
@@ -132,7 +126,9 @@ export default {
 <style lang="scss" scoped>
 .render-content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-content: flex-start;
   overflow: scroll;
   flex: 1;
   min-width: 300px;
@@ -145,7 +141,7 @@ export default {
     text-align: left;
     width: 90%;
     min-height: 200px;
-    background: rgb(235, 235, 235);
+    // background: rgb(235, 235, 235);
   }
   .empty-module {
     display: flex;
