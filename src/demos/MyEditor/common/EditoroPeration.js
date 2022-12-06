@@ -1,4 +1,5 @@
 import ComponentsList from './ComponentsList'
+import { v4 } from "uuid";
 
 export default class EditoroPeration extends ComponentsList {
   // 获取导出JSON回显数据---去除component与attrsComponent字段
@@ -41,6 +42,38 @@ export default class EditoroPeration extends ComponentsList {
   static getComponentInfo(compId) {
     return super.list.find(item => item.compId === compId)
   }
+  // 递归重置renderId与rowRenderId---无需在调用时，深拷贝传参
+  static resetDeepRenderId(renderInfo, rowRenderId, childrenStr = 'columnsList') {
+    // 在函数内部已深拷贝过一次
+    let res = this._resetDeepRenderId(JSON.parse(JSON.stringify(renderInfo)), rowRenderId, childrenStr)
+    return res
+  }
+  static _resetDeepRenderId(renderInfo, rowRenderId, childrenStr) {
+    let newRenderInfo = renderInfo;
+    if (Array.isArray(newRenderInfo)) {
+      for (const info of newRenderInfo) {
+        this._resetDeepRenderId(info, rowRenderId, childrenStr);
+      }
+    } else if (
+      Object.prototype.toString.call(newRenderInfo) === "[object Object]"
+    ) {
+      for (const key in newRenderInfo) {
+        // 替换原有的renderId
+        if (key === "renderId") newRenderInfo.renderId = v4();
+        // 替换行数据的renderId
+        if (rowRenderId) newRenderInfo.rowRenderId = rowRenderId;
+
+        // 有子项则递归---带上横数据renderId，在列数据赋值至rowRenderId
+        if (key === childrenStr) {
+          newRenderInfo[childrenStr] = this._resetDeepRenderId(
+            newRenderInfo[childrenStr],
+            newRenderInfo.renderId
+          );
+        }
+      }
+    }
+    return newRenderInfo;
+  }
 
   static _isArray(data) {
     return Array.isArray(data)
@@ -49,4 +82,3 @@ export default class EditoroPeration extends ComponentsList {
     return Object.prototype.toString.call(data) === '[object Object]'
   }
 }
-EditoroPeration.getComponentInfo()

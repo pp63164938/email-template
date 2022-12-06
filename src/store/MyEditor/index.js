@@ -1,5 +1,7 @@
-import { v4 } from 'uuid'
 import Vue from 'vue'
+import { v4 } from 'uuid'
+import EditoroPeration from "@/demos/MyEditor/common/EditoroPeration.js";
+
 export default {
   namespaced: true,
   state: {
@@ -45,14 +47,9 @@ export default {
       // 新的渲染数据---用于复制
       let newRenderInfo
       switch (actType) {
-        // 复制渲染模块
+        // 复制渲染模块 
         case 'copy':
-          newRenderInfo = {
-            ...renderInfo,
-            renderId: v4(),  // 新的id
-            attrsFormData: JSON.parse(JSON.stringify(renderInfo.attrsFormData)), // 属性表单需要深拷贝
-            columnsList: getDeepCopyColumnsList(renderInfo.columnsList) // 获取当前行数据，深拷贝的所有列渲染信息
-          }
+          newRenderInfo = EditoroPeration.resetDeepRenderId(renderInfo)
           allRenderList.splice(currentIndex, 0, newRenderInfo)
           // 当前编辑属性面板置更新为当前新渲染信息
           state.currentRenderInfo = newRenderInfo
@@ -82,7 +79,7 @@ export default {
           newColumnRnderInfo = {
             ...columnRnderInfo,
             renderId: v4(),  // 新的id
-            attrsFormData: JSON.parse(JSON.stringify(columnRnderInfo.attrsFormData)) // 属性表单需要深拷贝
+            attrsFormData: deepCopy(columnRnderInfo.attrsFormData)  // 属性表单需要深拷贝
           }
           columnsListItem.splice(currentIndex, 0, newColumnRnderInfo)
           // 当前编辑属性面板置更新为当前新渲染信息
@@ -116,11 +113,14 @@ function getColumnInfo(row, renderId) {
 }
 // 获取复制的渲染信息---需新的renderId
 function getDeepCopyColumnsList(columnsList) {
-  let newClumnsList = JSON.parse(JSON.stringify(columnsList))
+  let newClumnsList = deepCopy(deepCopy)
   newClumnsList.forEach(item => {
     item.forEach(info => {
       info.renderId = v4()  // 新的id
     })
   });
   return newClumnsList
+}
+function deepCopy(data) {
+  return JSON.parse(JSON.stringify(data))
 }
