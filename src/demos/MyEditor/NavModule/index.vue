@@ -75,8 +75,43 @@ export default {
       // return true;
       // return !!isDrop;
     },
+    // 递归重置renderId与rowRenderId
+    resetDeepRenderId(renderInfo, rowRenderId, childrenStr = "columnsList") {
+      let newRenderInfo = renderInfo;
+      if (Array.isArray(newRenderInfo)) {
+        for (const info of newRenderInfo) {
+          this.resetDeepRenderId(info, rowRenderId, childrenStr);
+        }
+      } else if (
+        Object.prototype.toString.call(newRenderInfo) === "[object Object]"
+      ) {
+        for (const key in newRenderInfo) {
+          // 替换原有的renderId
+          if (key === "renderId") newRenderInfo.renderId = v4();
+          // 替换行数据的renderId
+          if (rowRenderId) newRenderInfo.rowRenderId = rowRenderId;
+
+          // 有子项则递归---带上横数据renderId，在列数据赋值至rowRenderId
+          if (key === childrenStr) {
+            newRenderInfo[childrenStr] = this.resetDeepRenderId(
+              newRenderInfo[childrenStr],
+              newRenderInfo.renderId
+            );
+          }
+        }
+      }
+      return newRenderInfo;
+    },
     // 复制时触发---拖拽到另一片区域
     onClone({ compId, type = "feature", props = {} } = {}) {
+      // 若为模板模块，则重置内部所有的renderId与rowRenderId并返回
+      if (type === "template") {
+        return this.resetDeepRenderId(
+          JSON.parse(JSON.stringify(props.templateConfig))
+        );
+      }
+
+      // 常规返回（非模板）
       // 将在在渲染页面(RenderContent)生成的配置项
       return {
         renderId: v4(),

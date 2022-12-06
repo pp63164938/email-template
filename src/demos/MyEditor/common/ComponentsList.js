@@ -1,4 +1,6 @@
 // 导航模块组件列表
+
+import template1 from '@/demos/MyEditor/common/component/Template/template1.js'
 export default class ComponentsList {
   static list = [
     // {
@@ -9,6 +11,17 @@ export default class ComponentsList {
     //   type: 'layout',  // 组件使用类型---layout:布局(用于栅栏布局)   feature:功能(文本、按钮等)  template:模板(指定布局和功能的组合模板)
     //   props: { cells: [1, 1, 1] }, // 传参
     // },
+    {
+      compId: 'temp1',
+      compName: '模板1',
+      // 模板无需使用组件，依赖于props.templateConfig里的内容
+      // component: '',
+      // attrsComponent: '',
+      type: 'template',
+      props: {
+        templateConfig: template1,
+      },
+    },
     {
       compId: 'Layout_1-1-1',
       compName: '栅栏布局1-1-1',

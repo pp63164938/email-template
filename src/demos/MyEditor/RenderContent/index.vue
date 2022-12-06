@@ -50,7 +50,7 @@ export default {
         pull: true, //可以拖出
         put: (...arg) => {
           let info = arg[2]._underlying_vm_;
-          return ["layout", "tempalte"].includes(info.type);
+          return ["layout", "template"].includes(info.type);
         }, //可以拖出
       },
     };
