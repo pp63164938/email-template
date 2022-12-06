@@ -35,10 +35,9 @@ export default {
       componentsList,
       groupConf: {
         name: "element",
-        // pull: true, //可以拖出
         pull: "clone", //可以拖出
-        put: true, //可以拖入
-        sort: false,
+        put: false, //可以拖入
+        sort: true,
       },
     };
   },
@@ -62,8 +61,13 @@ export default {
       // console.log(e, "end");
     },
     // 拖动时触发---返回Boolean，是否可做为落脚点
+    // 拖动时触发---返回Boolean，是否可停靠
     onMove(e) {
       return e;
+      // let dragInfo = e.draggedContext.element;
+      // let res = ["layout"].includes(dragInfo.type)
+      // return ["layout"].includes(dragInfo.type);
+
       // 落脚点信息
       // let dropInfo = e.relatedContext.element;
       // // 不允许当前导航区所有模块之间停靠，仅可被拖进渲染内容区
@@ -72,11 +76,13 @@ export default {
       // return !!isDrop;
     },
     // 复制时触发---拖拽到另一片区域
-    onClone(currConf) {
+    onClone({ compId, type = "feature", props = {} } = {}) {
       // 将在在渲染页面(RenderContent)生成的配置项
       return {
         renderId: v4(),
-        ...currConf,
+        compId,
+        type,
+        props,
       };
     },
   },

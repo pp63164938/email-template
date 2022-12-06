@@ -1,43 +1,57 @@
 // 导航模块组件列表
 export default class ComponentsList {
   static list = [
+    // {
+    //   compId: 'Layout_1-1-1',  // 组件id---唯一标识
+    //   compName: '栅栏布局1-1-1', // 组件描述
+    //   component: () => import("./component/Layout/Layout.vue"),  // 渲染组件
+    //   attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),  // 编辑组件
+    //   type: 'layout',  // 组件使用类型---layout:布局(用于栅栏布局)   feature:功能(文本、按钮等)  template:模板(指定布局和功能的组合模板)
+    //   props: { cells: [1, 1, 1] }, // 传参
+    // },
     {
-      compId: 'Layout',
+      compId: 'Layout_1-1-1',
       compName: '栅栏布局1-1-1',
       component: () => import("./component/Layout/Layout.vue"),
       attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
-      cells: [1, 1, 1]
+      type: 'layout',
+      props: { cells: [1, 1, 1] },
+      cells: [1, 1, 3]
     },
     {
       compId: 'Layout_1-1-3',
       compName: '栅栏布局1-1-3',
       component: () => import("./component/Layout/Layout.vue"),
       attrsComponent: () => import("./component/Layout/LayoutAttrs.vue"),
-      cells: [1, 1, 3]
+      props: { cells: [1, 1, 3] },
     },
     {
       compId: 'Text',
       compName: '文本',
       component: () => import("./component/Text.vue"),
       attrsComponent: () => import("./component/TextAttrs.vue"),
+      type: 'feature',
     },
     {
       compId: 'RichText',
       compName: '富文本',
       component: () => import("./component/RichText.vue"),
       attrsComponent: () => import("./component/RichTextAttrs.vue"),
+      type: 'feature',
     },
     {
       compId: 'ElButton',
       compName: '按钮',
       component: () => import("./component/Button.vue"),
       attrsComponent: () => import("./component/ButtonAttrs.vue"),
+      type: 'feature',
     },
     {
       compId: 'ElDivider',
       compName: '分割线',
       component: () => import("./component/Divider.vue"),
       attrsComponent: () => import("./component/ButtonAttrs.vue"),
+      type: 'feature',
     }
   ]
 }

@@ -55,9 +55,8 @@ export default {
         name: "element",
         pull: true, //可以拖出
         put: (...arg) => {
-          // 布局组件才可放进内容画布，功能组件需要放进画布里的容器---布局组件才有cells属性
-          let cells = arg[2]._underlying_vm_.cells;
-          return !!(cells && cells.length);
+          let info = arg[2]._underlying_vm_;
+          return ["layout", "tempalte"].includes(info.type);
         }, //可以拖出
       },
     };

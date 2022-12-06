@@ -61,20 +61,18 @@ export default {
       groupConf: {
         name: "element",
         pull: true, //可以拖出
-        put: true,
-        // put: (...arg) => {
-        //   // 功能组件放进画布里的容器
-        //   let isLayout = arg[2]._underlying_vm_.isLayout;
-        //   return false
-        //   // return !isLayout;
-        // }, //可以拖出
+        put: (...arg) => {
+          // 功能组件放进画布里的容器
+          let info = arg[2]._underlying_vm_;
+          return ["feature"].includes(info.type);
+        }, //可以拖出
       },
     };
   },
   computed: {
     // 当前布局规格---[1,2,3]
     currentCells() {
-      return this.renderInfo.cells;
+      return this.renderInfo.props.cells;
     },
   },
   methods: {
