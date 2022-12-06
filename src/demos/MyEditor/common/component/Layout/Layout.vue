@@ -15,12 +15,28 @@
         @add="onAdd"
       >
         <transition-group style="min-height: 120px; display: block">
-          <template v-for="columnRnderInfo in columnsList[cellIndex]">
-            <!-- @copyRender="copyRender" -->
-            <!-- @deleteRender="deleteRender" -->
+          <template
+            v-for="(columnRnderInfo, columnRnderIndex) in columnsList[
+              cellIndex
+            ]"
+          >
             <ColumnContainer
               :renderInfo="columnRnderInfo"
               :key="columnRnderInfo.renderId"
+              @copyRender="
+                copyColumnRender(
+                  columnRnderIndex,
+                  columnRnderInfo,
+                  columnsList[cellIndex]
+                )
+              "
+              @deleteRender="
+                deleteColumnRender(
+                  columnRnderIndex,
+                  columnRnderInfo,
+                  columnsList[cellIndex]
+                )
+              "
             />
           </template>
         </transition-group>
@@ -62,7 +78,27 @@ export default {
     },
   },
   methods: {
-    ...mapActions("MyEditor", ["updateColumnsList"]),
+    ...mapActions("MyEditor", ["updateColumnsList", "spliceColumnsListItem"]),
+    // 复制列渲染内容
+    copyColumnRender(columnRnderIndex, columnRnderInfo, columnsListItem) {
+      this.spliceColumnsListItem({
+        actType: "copy",
+        columnRnderIndex, // 列内部渲染项的位置
+        columnRnderInfo, // 列内部渲染项的信息
+        columnsListItem, // 当前列所有渲染信息
+      });
+      // this.$set(columnsListItem);
+    },
+    // 删除列渲染内容
+    deleteColumnRender(columnRnderIndex, columnRnderInfo, columnsListItem) {
+      this.spliceColumnsListItem({
+        actType: "delete",
+        columnRnderIndex, // 列内部渲染项的位置
+        columnRnderInfo, // 列内部渲染项的信息
+        columnsListItem, // 当前列所有渲染信息
+      });
+    },
+    // 拖拽新增模块，生成后后回调
     onAdd(e) {
       let renderInfo = e.item._underlying_vm_;
       this.setRowRenderId(renderInfo, this.renderInfo.renderId);

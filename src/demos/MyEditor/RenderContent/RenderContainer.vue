@@ -63,11 +63,11 @@ export default {
     },
     // 复制容器
     copyContainer() {
-      this.$emit("copyRender", this.renderInfo);
+      this.$emit("copyRender");
     },
     // 删除容器
     deleteContainer() {
-      this.$emit("deleteRender", this.renderInfo);
+      this.$emit("deleteRender");
     },
   },
   mounted() {

@@ -26,7 +26,7 @@ export default {
       // 有rowRenderId时，则给某一行数据，里对应的列数据设置属性编辑表单
       if (rowRenderId) {
         let rowRenderInfo = state.allRenderList.find(item => item.renderId === rowRenderId) || {}
-        let columnRenderInfo = geColumnInfo(rowRenderInfo, renderId)
+        let columnRenderInfo = getColumnInfo(rowRenderInfo, renderId)
         Vue.set(columnRenderInfo, 'attrsFormData', attrsFormData)
       }
       // 有renderId时，则单独赋值 所编辑的表单数据；无则整体List更新
@@ -37,11 +37,11 @@ export default {
         state.allRenderList = renderList
       }
     },
-    // 切割allRenderList---对一维数据进行添加删除
-    SPLICE_ALL_RENDER_LIST(state, { actType, renderInfo }) {
-      let allRenderList = state.allRenderList
+    // 切割allRenderList---对横向数据进行添加删除
+    SPLICE_ALL_RENDER_LIST(state, { actType, renderIndex, renderInfo, renderList, }) {
+      let allRenderList = renderList
       // 操作渲染数据索引
-      let currentIndex = allRenderList.findIndex(item => item.renderId === renderInfo.renderId)
+      let currentIndex = renderIndex
       // 新的渲染数据---用于复制
       let newRenderInfo
       switch (actType) {
@@ -50,7 +50,8 @@ export default {
           newRenderInfo = {
             ...renderInfo,
             renderId: v4(),  // 新的id
-            attrsFormData: JSON.parse(JSON.stringify(renderInfo.attrsFormData)) // 属性表单需要深拷贝
+            attrsFormData: JSON.parse(JSON.stringify(renderInfo.attrsFormData)), // 属性表单需要深拷贝
+            columnsList: getDeepCopyColumnsList(renderInfo.columnsList) // 获取当前行数据，深拷贝的所有列渲染信息
           }
           allRenderList.splice(currentIndex, 0, newRenderInfo)
           // 当前编辑属性面板置更新为当前新渲染信息
@@ -68,21 +69,58 @@ export default {
     UPDATE_COLUMNS_LIST(state, { rowRenderId, columnsList = [] }) {
       let rowIndex = state.allRenderList.findIndex(f => f.renderId === rowRenderId)
       Vue.set(state.allRenderList[rowIndex], 'columnsList', columnsList)
-    }
+    },
+    // 切割columnList里，某一项的渲染数据---对纵向渲染数据进行添加删除
+    SPLICE_COLUMNS_LIST_ITEM(state, { actType, columnRnderIndex, columnRnderInfo, columnsListItem }) {
+      // 操作渲染数据索引
+      let currentIndex = columnRnderIndex
+      // 新的渲染数据---用于复制
+      let newColumnRnderInfo
+      switch (actType) {
+        // 复制列内部渲染模块
+        case 'copy':
+          newColumnRnderInfo = {
+            ...columnRnderInfo,
+            renderId: v4(),  // 新的id
+            attrsFormData: JSON.parse(JSON.stringify(columnRnderInfo.attrsFormData)) // 属性表单需要深拷贝
+          }
+          columnsListItem.splice(currentIndex, 0, newColumnRnderInfo)
+          // 当前编辑属性面板置更新为当前新渲染信息
+          state.currentRenderInfo = newColumnRnderInfo
+          break;
+        // 删除列内部渲染模块
+        case 'delete':
+          columnsListItem.splice(currentIndex, 1)
+          // 当前编辑属性面板置为空
+          state.currentRenderInfo = {}
+          break;
+      }
+    },
   },
   actions: {
     updateCurrentRender({ commit }, payload) { commit('UPDATE_CURRENT_RENDER', payload) },
     updateAllRenderList({ commit }, payload) { commit('UPDATE_ALL_RENDER_LIST', payload) },
     spliceAllRenderList({ commit }, payload) { commit('SPLICE_ALL_RENDER_LIST', payload) },
     updateColumnsList({ commit }, payload) { commit('UPDATE_COLUMNS_LIST', payload) },
+    spliceColumnsListItem({ commit }, payload) { commit('SPLICE_COLUMNS_LIST_ITEM', payload) },
   },
 }
 
 // 根据renderId，获取行数据里相应的列数据---在若干个数组里的数组查询
-function geColumnInfo(row, renderId) {
+function getColumnInfo(row, renderId) {
   return row.columnsList
     .find(item => {
       return item.find(citem => citem.renderId === renderId)
     })
     .find(item => item.renderId === renderId)
+}
+// 获取复制的渲染信息---需新的renderId
+function getDeepCopyColumnsList(columnsList) {
+  let newClumnsList = JSON.parse(JSON.stringify(columnsList))
+  newClumnsList.forEach(item => {
+    item.forEach(info => {
+      info.renderId = v4()  // 新的id
+    })
+  });
+  return newClumnsList
 }

@@ -21,12 +21,12 @@
         >
           请拖入组件模块
         </div>
-        <template v-for="renderInfo in renderList">
+        <template v-for="(renderInfo, renderIndex) in renderList">
           <RenderContainer
             :renderInfo="renderInfo"
             :key="renderInfo.renderId"
-            @copyRender="copyRender"
-            @deleteRender="deleteRender"
+            @copyRender="copyRender(renderIndex, renderInfo, renderList)"
+            @deleteRender="deleteRender(renderIndex, renderInfo, renderList)"
           />
         </template>
       </transition-group>
@@ -69,12 +69,22 @@ export default {
   methods: {
     ...mapActions("MyEditor", ["updateAllRenderList", "spliceAllRenderList"]),
     // 拷贝渲染模块
-    copyRender(renderInfo) {
-      this.spliceAllRenderList({ actType: "copy", renderInfo });
+    copyRender(renderIndex, renderInfo, renderList) {
+      this.spliceAllRenderList({
+        actType: "copy",
+        renderIndex,
+        renderInfo,
+        renderList,
+      });
     },
     // 删除渲染模块
-    deleteRender(renderInfo) {
-      this.spliceAllRenderList({ actType: "delete", renderInfo });
+    deleteRender(renderIndex, renderInfo, renderList) {
+      this.spliceAllRenderList({
+        actType: "delete",
+        renderIndex,
+        renderInfo,
+        renderList,
+      });
     },
     // 同步渲染列表至本地
     asyncToLocalData(value) {
